@@ -58,6 +58,10 @@ Start with the [development guide](docs/development.md) and [architecture docume
 
 For agents, follow [AGENTS.md](AGENTS.md).
 
+## Extensions
+
+The repository ships the [ARTEX](https://github.com/RuoJi6/ARTEX) autonomous penetration-testing system as an isolated extension module under [`extensions/artex/`](extensions/artex/) (Go backend + Next.js frontend, AGPL-3.0, kept outside the pnpm workspace). The [`@deepseek-ai/dsh-artex-bridge`](packages/artex/artex-bridge/) plugin exposes ARTEX tasks, findings, assets and activity as model-facing tools. See [docs/integrations/artex.md](docs/integrations/artex.md) and `pnpm run artex:build` / `artex:test` for the module toolchain.
+
 ## Citation
 
 ```bibtex

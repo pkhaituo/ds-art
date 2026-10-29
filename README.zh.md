@@ -77,6 +77,10 @@ pnpm dsh web
 
 面向 agent：请遵循 [AGENTS.md](AGENTS.md)。
 
+## 扩展模块
+
+本仓库将 [ARTEX](https://github.com/RuoJi6/ARTEX)（AI 自主渗透测试系统）作为隔离的扩展模块内置在 [`extensions/artex/`](extensions/artex/)（Go 后端 + Next.js 前端，AGPL-3.0，不进入 pnpm workspace）。插件 [`@deepseek-ai/dsh-artex-bridge`](packages/artex/artex-bridge/) 把 ARTEX 的任务、发现、资产和活动流暴露为模型可调用工具。详见 [docs/integrations/artex.zh.md](docs/integrations/artex.zh.md)；可用 `pnpm run artex:build` / `artex:test` 构建与测试该模块。
+
 ## 引用
 
 ```bibtex

@@ -1,7 +1,7 @@
 # Short names for the Web and Desktop application commands. The package.json
 # scripts they call stay the source of truth; docs/development.md documents both.
 .DEFAULT_GOAL := help
-.PHONY: help build clean web desktop dev-web dev-desktop
+.PHONY: help build clean web desktop dev-web dev-desktop artex-build artex-test artex-web-install artex-web-build
 
 PNPM ?= pnpm
 ARGS ?=
@@ -13,6 +13,10 @@ help:
 	@echo "make desktop      pnpm run start:desktop   launch the built Desktop artifacts"
 	@echo "make dev-web      pnpm run dev:web         build, serve, and rebuild Web on source edits"
 	@echo "make dev-desktop  pnpm run dev:desktop     build, then launch Desktop"
+	@echo "make artex-build  pnpm run artex:build       compile the ARTEX extension Go backend"
+	@echo "make artex-test   pnpm run artex:test        run the ARTEX extension Go test suite"
+	@echo "make artex-web-install  pnpm run artex:web:install  install ARTEX web frontend deps"
+	@echo "make artex-web-build    pnpm run artex:web:build    build the ARTEX web frontend"
 	@echo "ARGS='--no-open --port 3081' forwards options to the launched application;"
 	@echo "the Web commands accept dsh web flags, the Desktop launcher accepts none."
 
@@ -33,3 +37,15 @@ dev-web:
 
 dev-desktop:
 	$(PNPM) run dev:desktop $(ARGS)
+
+artex-build:
+	$(PNPM) run artex:build
+
+artex-test:
+	$(PNPM) run artex:test
+
+artex-web-install:
+	$(PNPM) run artex:web:install
+
+artex-web-build:
+	$(PNPM) run artex:web:build

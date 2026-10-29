@@ -50,3 +50,10 @@ native/system/test/bin/
 
 # Generated company-signed CUA release record.
 /packages/experimental/cua-macos/cua-helper.json
+
+# ARTEX extension module (extensions/artex, AGPL-3.0) build and runtime state.
+extensions/artex/bin/
+extensions/artex/web/.next/
+extensions/artex/config.json
+extensions/artex/artex.db
+extensions/artex/*.log
