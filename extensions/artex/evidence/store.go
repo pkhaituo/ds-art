@@ -13,6 +13,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -112,6 +113,12 @@ func (s *Store) writeBody(r io.Reader, expectedLength int64, expectedHash string
 		return "", err
 	}
 	defer d.Close()
+	// Directory fsync is a POSIX-only durability nicety: on Windows
+	// FlushFileBuffers on a directory handle always fails with
+	// ERROR_ACCESS_DENIED, so skip it there instead of failing every write.
+	if runtime.GOOS == "windows" {
+		return hash, nil
+	}
 	return hash, d.Sync()
 }
 
