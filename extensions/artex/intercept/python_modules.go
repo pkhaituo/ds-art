@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strings"
 
 	"mvdan.cc/sh/v3/syntax"
@@ -116,7 +117,17 @@ func pythonModuleReferences(name, module, dir string, args, wrapperArgs []*synta
 			var err error
 			executable, err = exec.LookPath(name)
 			if err != nil {
-				return problem("无法定位 Python 解释器及模块源码")
+				if runtime.GOOS != "windows" {
+					return problem("无法定位 Python 解释器及模块源码")
+				}
+				// Windows LookPath only resolves extension-bearing
+				// executables; fall back to a verbatim PATH scan for
+				// POSIX-style interpreter names. The ELF/PE magic check
+				// below still rejects non-native files.
+				executable = scanPathForNative(name, env["PATH"], dir)
+				if executable == "" {
+					return problem("无法定位 Python 解释器及模块源码")
+				}
 			}
 		} else {
 			executable = ""
@@ -128,7 +139,7 @@ func pythonModuleReferences(name, module, dir string, args, wrapperArgs []*synta
 					entry = filepath.Join(dir, entry)
 				}
 				candidate := filepath.Join(entry, name)
-				if info, err := os.Stat(candidate); err == nil && info.Mode().IsRegular() && info.Mode()&0111 != 0 {
+				if info, err := os.Stat(candidate); err == nil && info.Mode().IsRegular() && (info.Mode()&0111 != 0 || runtime.GOOS == "windows") {
 					executable = candidate
 					break
 				}

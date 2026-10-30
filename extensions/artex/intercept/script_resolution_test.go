@@ -97,7 +97,7 @@ func TestPythonModuleSourceResolutionWithoutExecution(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	python := filepath.Join(bin, "python3.12")
+	python := filepath.ToSlash(filepath.Join(bin, "python3.12"))
 	if err := os.WriteFile(python, []byte("\x7fELF not executable test metadata"), 0700); err != nil {
 		t.Fatal(err)
 	}
@@ -155,7 +155,7 @@ func TestPythonModuleSourceResolutionWithoutExecution(t *testing.T) {
 	if in.ScriptCaptureStatus != "incomplete" {
 		t.Fatal("substituted stdlib despite a shadowing non-package module")
 	}
-	extra := filepath.Join(root, "extra")
+	extra := filepath.ToSlash(filepath.Join(root, "extra"))
 	write(filepath.Join(extra, "one.py"), "EXTRA=1\n")
 	in = reviewCommandForTest(t, cwd, "PYTHONPATH="+extra+" "+python+" -m one")
 	if in.ScriptCaptureStatus != "complete" || in.Scripts[0].Content != "EXTRA=1\n" {

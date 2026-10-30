@@ -67,7 +67,7 @@ func inlineShellWords(w *syntax.Word, bindings map[string][]string) ([]string, b
 	}
 	var words []string
 	for _, env := range envs {
-		fields, err := expand.Fields(&expand.Config{Env: expand.ListEnviron(env...), NoUnset: true}, w)
+		fields, err := expand.Fields(&expand.Config{Env: expandEnvironment(env...), NoUnset: true}, w)
 		if err != nil || len(fields) != 1 || len(fields[0]) > maxReviewScriptBytes {
 			return nil, false
 		}

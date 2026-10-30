@@ -2,7 +2,6 @@ package intercept
 
 import (
 	"os"
-	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -143,12 +142,7 @@ func generatedSedSnapshot(stmt *syntax.Stmt, args []*syntax.Word, dir, target st
 	if !known || (name != "sed" && name != "/bin/sed" && name != "/usr/bin/sed") {
 		return "", "", false
 	}
-	executable, err := exec.LookPath(name)
-	if err != nil {
-		return "", "", false
-	}
-	executable, err = filepath.EvalSymlinks(executable)
-	if err != nil || (executable != "/bin/sed" && executable != "/usr/bin/sed") || !nativeInterpreterFile(executable) {
+	if _, ok := resolveTrustedTool(name, "sed"); !ok {
 		return "", "", false
 	}
 	program, known := staticWord(args[1])
@@ -306,13 +300,7 @@ func staticSedPrefixKnown(tree *syntax.File, target *syntax.Stmt, remaining *int
 					safe = false
 				}
 			case "cat", "mkdir", "chmod", "sed":
-				executable, err := exec.LookPath(name)
-				if err != nil {
-					safe = false
-					break
-				}
-				executable, err = filepath.EvalSymlinks(executable)
-				if err != nil || (executable != "/bin/"+base && executable != "/usr/bin/"+base) || !nativeInterpreterFile(executable) {
+				if _, ok := resolveTrustedTool(name, base); !ok {
 					safe = false
 					break
 				}
